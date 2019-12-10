@@ -194,46 +194,5 @@ public class ApiClient {
 		}
 		return httpResponse;
 	}
-	
-	public static <T> T responseToPojoObject(HttpResponse httpResponse, Class<T> className) throws ParseException, IOException {
-		String responseContentType = null;
-		Header[] headers = httpResponse.getHeaders("Content-Type");
-		responseContentType = headers[0].getValue();
-		T t = null;
-		if(responseContentType != null && responseContentType.contains("json")) {
-			t = convertJsonStringToPojoObject(ApiUtils.getEntityInString(httpResponse), className);
-		}else if(responseContentType != null && responseContentType.contains("xml")) {
-			t = convertXmlStringToPojoObject(ApiUtils.getEntityInString(httpResponse), className);
-		}
-		return t;
-	}
-	
-	public static <T> T convertJsonStringToPojoObject(String value, Class<T> className) throws JsonMappingException, JsonProcessingException {
-		T t = null;
-			ObjectMapper objectMapper = new ObjectMapper();
-			t = objectMapper.readValue(value, className);
-		return t;
-	}
-	
-	public static <T> T convertXmlStringToPojoObject(String value, Class<T> className) throws JsonMappingException, JsonProcessingException {
-		T t = null;
-		XmlMapper xmlMapper = new XmlMapper();
-		t = xmlMapper.readValue(value, className);
-		return t;
-	}
-	
-	public static <T> String convertPojoObjectToJsonString(T payload) throws JsonMappingException, JsonProcessingException {
-		String stringEntity = null;
-		ObjectMapper objectMapper = new ObjectMapper();
-		stringEntity = objectMapper.writeValueAsString(payload);
-		return stringEntity;
-	}
-	
-	public static <T> String convertPojoObjectToXmlString(T payload) throws JsonMappingException, JsonProcessingException {
-		String stringEntity = null;
-		XmlMapper xmlMapper = new XmlMapper();
-		stringEntity = xmlMapper.writeValueAsString(payload);
-		return stringEntity;
-	}
 
 }
