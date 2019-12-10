@@ -1,15 +1,12 @@
 package com.qapitol.automationqa.api.client;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,244 +32,325 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public class ApiClient {
-	
+
 	Logger log = LogManager.getLogger(getClass());
 	
-	public HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint, Map<String, String> pathParams , Map<String, String> queryParams, String payload, Map<String, Object> form, BodyType contentType, BodyType accept) throws ClientProtocolException, IOException {
-		
+	ApiUtils apiUtils = new ApiUtils();
+
+	public HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams, String payload, Map<String, Object> form,
+			ContentType contentType, Accept accept) throws ClientProtocolException, IOException {
+
 		log.info("Http Request");
-		
+
 		HttpResponse httpResponse = null;
 		HttpClient client = HttpClients.createDefault();
-		
-		if(endPoint != null && pathParams != null && pathParams.size() > 0) {
-			for(Map.Entry<String, String> pathParam : pathParams.entrySet()) {
-				endPoint = endPoint.replace("{"+pathParam.getKey()+"}", pathParam.getValue());
+
+		if (endPoint != null && pathParams != null && pathParams.size() > 0) {
+			for (Map.Entry<String, String> pathParam : pathParams.entrySet()) {
+				endPoint = endPoint.replace("{" + pathParam.getKey() + "}", pathParam.getValue());
 			}
 		}
-		
+
 		String uri = hostName;
-		if(endPoint != null)
+		if (endPoint != null)
 			uri = uri + endPoint;
-		
-		if(headers == null && contentType != null) {
+
+		if (headers == null && contentType != null) {
 			headers = new HashMap<String, String>();
 			headers.put("Content-Type", contentType.getValue());
 		}
-		
-		if(headers == null && accept != null) {
+
+		if (headers == null && accept != null) {
 			headers = new HashMap<String, String>();
 			headers.put("Accept", accept.getValue());
 		}
-		
-		if(queryParams != null && queryParams.size() > 0) {
+
+		if (queryParams != null && queryParams.size() > 0) {
 			uri = uri + "?";
-			for(Map.Entry<String, String> param : queryParams.entrySet()) {
-				if(!uri.endsWith("?"))
+			for (Map.Entry<String, String> param : queryParams.entrySet()) {
+				if (!uri.endsWith("?"))
 					uri = uri + "&";
 				uri = uri + param.getKey() + "=" + param.getValue();
 			}
 		}
-		
-		switch(method) {
-		case GET:{
+
+		switch (method) {
+		case GET: {
 			log.info("Http Get request");
 			HttpGet getRequest = new HttpGet(uri);
-			if(headers != null&& headers.size() > 0) {
-				for(Map.Entry<String, String> head : headers.entrySet()) {
+			if (headers != null && headers.size() > 0) {
+				for (Map.Entry<String, String> head : headers.entrySet()) {
 					getRequest.addHeader(head.getKey(), head.getValue());
 				}
 			}
 			log.info("http execute");
+			apiUtils.addLogAndAllure(getRequest);
 			httpResponse = client.execute(getRequest);
+			apiUtils.addLogAndAllure(httpResponse);
 			log.info("http executed");
 			break;
 		}
-		case POST:{
+		case POST: {
 			HttpPost postRequest = new HttpPost(uri);
-			if(headers != null && headers.size() > 0) {
-				for(Map.Entry<String, String> head : headers.entrySet()) {
+			if (headers != null && headers.size() > 0) {
+				for (Map.Entry<String, String> head : headers.entrySet()) {
 					postRequest.addHeader(head.getKey(), head.getValue());
 				}
 			}
-			if(payload != null) {
+			if (payload != null) {
 				HttpEntity entity = new StringEntity(payload);
 				postRequest.setEntity(entity);
 			}
-			
-			if(form != null && form.size() > 0) {
-				if(contentType == BodyType.MULTIPART_FORM) {
-				postRequest.removeHeaders("Content-Type");  //below method will add correct Content-Type
-				MultipartEntityBuilder multipart = MultipartEntityBuilder.create();
-				multipart.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-				for(Map.Entry<String, Object> eachForm : form.entrySet()) {
-					if(eachForm.getValue() instanceof File) {
-						multipart.addBinaryBody(eachForm.getKey(), (File)eachForm.getValue());
-					}else {
-						log.info("Adding multipart");
-						multipart.addTextBody(eachForm.getKey(), eachForm.getValue().toString());
+
+			if (form != null && form.size() > 0) {
+				if (contentType == ContentType.MULTIPART_FORM) {
+					postRequest.removeHeaders("Content-Type"); // below method will add correct Content-Type
+					MultipartEntityBuilder multipart = MultipartEntityBuilder.create();
+					multipart.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						if (eachForm.getValue() instanceof File) {
+							multipart.addBinaryBody(eachForm.getKey(), (File) eachForm.getValue());
+						} else {
+							log.info("Adding multipart");
+							multipart.addTextBody(eachForm.getKey(), eachForm.getValue().toString());
+						}
 					}
-				}
-				HttpEntity formEntity = multipart.build();
-				postRequest.setEntity(formEntity);
-				}else if(contentType == BodyType.URL_ENCODED_FORM) {
+					HttpEntity formEntity = multipart.build();
+					postRequest.setEntity(formEntity);
+				} else if (contentType == ContentType.URL_ENCODED_FORM) {
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-					for(Map.Entry<String, Object> eachForm : form.entrySet()) {
-					nameValuePairs.add(new BasicNameValuePair(eachForm.getKey(), eachForm.getValue().toString()));
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						nameValuePairs.add(new BasicNameValuePair(eachForm.getKey(), eachForm.getValue().toString()));
 					}
 					UrlEncodedFormEntity urlEncodedForm = new UrlEncodedFormEntity(nameValuePairs, "utf-8");
 					urlEncodedForm.setContentType(contentType.getValue());
-					postRequest.setEntity(urlEncodedForm); 
+					postRequest.setEntity(urlEncodedForm);
 				}
 			}
+			apiUtils.addLogAndAllure(postRequest);
 			httpResponse = client.execute(postRequest);
+			apiUtils.addLogAndAllure(httpResponse);
 			break;
 		}
-		case PUT:{
+		case PUT: {
 			HttpPut putRequest = new HttpPut(uri);
-			if(headers != null&& headers.size() > 0) {
-				for(Map.Entry<String, String> head : headers.entrySet()) {
+			if (headers != null && headers.size() > 0) {
+				for (Map.Entry<String, String> head : headers.entrySet()) {
 					putRequest.addHeader(head.getKey(), head.getValue());
 				}
 			}
-			if(payload != null) {
+			if (payload != null) {
 				HttpEntity entity = new StringEntity(payload);
 				putRequest.setEntity(entity);
 			}
+			apiUtils.addLogAndAllure(putRequest);
 			httpResponse = client.execute(putRequest);
+			apiUtils.addLogAndAllure(httpResponse);
 			break;
 		}
-		case DELETE:{
+		case DELETE: {
 			HttpDelete deleteRequest = new HttpDelete(uri);
-			if(headers != null&& headers.size() > 0) {
-				for(Map.Entry<String, String> head : headers.entrySet()) {
+			if (headers != null && headers.size() > 0) {
+				for (Map.Entry<String, String> head : headers.entrySet()) {
 					deleteRequest.addHeader(head.getKey(), head.getValue());
 				}
 			}
+			apiUtils.addLogAndAllure(deleteRequest);
 			httpResponse = client.execute(deleteRequest);
+			apiUtils.addLogAndAllure(httpResponse);
 			break;
 		}
 		}
 		log.info("done http");
 		return httpResponse;
 	}
-	
 
-	public <T> T httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint, Map<String, String> pathParam, Map<String, String> queryParam, String payload, Map<String, Object> form, BodyType contentType, BodyType accept ,Class<T> responseClassName) throws ParseException, IOException {
-		
-		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam, payload, form, contentType, accept);
-		
-		String responseContentType = null;
-		Header[] headers = httpResponse.getHeaders("Content-Type");
-		responseContentType = headers[0].getValue();
-		
-		HttpEntity httpResponseEntity = httpResponse.getEntity();
-		String stringBody = EntityUtils.toString(httpResponseEntity);
-		
-		T t = null ;
-		
-		if(responseContentType != null && responseContentType.contains("json")) {
-			ObjectMapper objectMapper = new ObjectMapper();	
-			t = objectMapper.readValue(stringBody, responseClassName);
-		}else if(responseContentType != null && responseContentType.contains("xml")) {
-			XmlMapper xmlMapper = new XmlMapper();
-			t = xmlMapper.readValue(stringBody, responseClassName);
-		}
-		return t;
-	}
-	
-	//public HttpResponse httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint, Map<String, String> pathParam, Map<String, String> queryParam, Map<String, Object> form, BodyType contentType, BodyType accept, Object payload) throws ParseException, IOException {
-	public <T> HttpResponse httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint, Map<String, String> pathParam, Map<String, String> queryParam, T payload,  BodyType contentType, BodyType accept, Map<String, Object> form) throws ParseException, IOException {
-		String stringEntity = null;
-		if(contentType != null && contentType == BodyType.APPLICATION_JSON) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			stringEntity = objectMapper.writeValueAsString(payload);
-		}else if(contentType != null && contentType == BodyType.APPLICATION_XML) {
-			XmlMapper xmlMapper = new XmlMapper();
-			stringEntity = xmlMapper.writeValueAsString(payload);
-		}
-		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam, stringEntity, form, contentType, accept);
+	public HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams, String payload,
+			ContentType contentType, Accept accept) throws ClientProtocolException, IOException {
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, payload, null, contentType, accept);
 		return httpResponse;
 	}
 	
-	public <T> T httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint, Map<String, String> pathParam, Map<String, String> queryParam, Map<String, Object> form, BodyType contentType, BodyType accept ,T payload, Class<T> responseClassName) throws ParseException, IOException {
-		
+	public <T> HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams,
+			ContentType contentType, T payload, Accept accept) throws ClientProtocolException, IOException {
 		String stringEntity = null;
-		if(contentType != null && contentType == BodyType.APPLICATION_JSON) {
+		if (contentType != null && contentType == ContentType.APPLICATION_JSON) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			stringEntity = objectMapper.writeValueAsString(payload);
-		}else if(contentType != null && contentType == BodyType.APPLICATION_XML) {
+		} else if (contentType != null && contentType == ContentType.APPLICATION_XML) {
 			XmlMapper xmlMapper = new XmlMapper();
 			stringEntity = xmlMapper.writeValueAsString(payload);
 		}
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, stringEntity,
+				 contentType, accept);
+		return httpResponse;
+	}
+	
+	public <T> T httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams, String payload,
+			ContentType contentType, Accept accept, Class<T> responseClassName) throws ClientProtocolException, IOException {
 		
-		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam, stringEntity, form, contentType, accept);
-		
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, payload, null, contentType, accept);
 		String responseContentType = null;
-		Header[] headers = httpResponse.getHeaders("Content-Type");
-		responseContentType = headers[0].getValue();
-		
+		Header[] responseHeader = httpResponse.getHeaders("Content-Type");
+		responseContentType = responseHeader[0].getValue();
+
 		HttpEntity httpResponseEntity = httpResponse.getEntity();
 		String stringBody = EntityUtils.toString(httpResponseEntity);
-		
-		T t = null ;
-		
-		if(responseContentType != null && responseContentType.contains("json")) {
-			ObjectMapper objectMapper = new ObjectMapper();	
+
+		T t = null;
+
+		if (responseContentType != null && responseContentType.contains("json")) {
+			ObjectMapper objectMapper = new ObjectMapper();
 			t = objectMapper.readValue(stringBody, responseClassName);
-		}else if(responseContentType != null && responseContentType.contains("xml")) {
+		} else if (responseContentType != null && responseContentType.contains("xml")) {
 			XmlMapper xmlMapper = new XmlMapper();
 			t = xmlMapper.readValue(stringBody, responseClassName);
 		}
 		return t;
 	}
 	
-	public enum ApiMethod {	
-		
-		GET,
-		POST,
-		PUT,
-		DELETE
-		
-	}
+	public <T> T httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams,
+			ContentType contentType, T payload, Accept accept, Class<T> responseClassName) throws ClientProtocolException, IOException {
+		String stringEntity = null;
+		if (contentType != null && contentType == ContentType.APPLICATION_JSON) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			stringEntity = objectMapper.writeValueAsString(payload);
+		} else if (contentType != null && contentType == ContentType.APPLICATION_XML) {
+			XmlMapper xmlMapper = new XmlMapper();
+			stringEntity = xmlMapper.writeValueAsString(payload);
+		}
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, stringEntity,
+				 contentType, accept);
+		String responseContentType = null;
+		Header[] responseHeader = httpResponse.getHeaders("Content-Type");
+		responseContentType = responseHeader[0].getValue();
 
+		HttpEntity httpResponseEntity = httpResponse.getEntity();
+		String stringBody = EntityUtils.toString(httpResponseEntity);
 
-	public File responseAsFile(HttpResponse response, String filePath) throws UnsupportedOperationException, IOException {
-		File file = null;
-		InputStream inputStream = response.getEntity().getContent();
-		FileOutputStream fileOutpuStream = new FileOutputStream(new File(filePath));
-		int inByte;
-		while((inByte = inputStream.read()) != -1)
-			fileOutpuStream.write(inByte);
-		inputStream.close();
-		fileOutpuStream.close();
-		file = new File(filePath);
-		return file;
+		T t = null;
+
+		if (responseContentType != null && responseContentType.contains("json")) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			t = objectMapper.readValue(stringBody, responseClassName);
+		} else if (responseContentType != null && responseContentType.contains("xml")) {
+			XmlMapper xmlMapper = new XmlMapper();
+			t = xmlMapper.readValue(stringBody, responseClassName);
+		}
+		return t;
 	}
 	
-	public File responseAsFile_Method2(HttpResponse response, String filePath) throws UnsupportedOperationException, IOException {
-		File file = null;
-		InputStream inputStream = response.getEntity().getContent();
-		FileUtils.copyInputStreamToFile(inputStream, new File(filePath));
-		file = new File(filePath);
-		return file;
+	public HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams, Map<String, Object> form,
+			ContentType contentType, Accept accept) throws ClientProtocolException, IOException {
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, null, form, contentType, accept);
+		return httpResponse;
 	}
 	
-	public enum BodyType {
-		
-		APPLICATION_JSON("application/json"),
-		APPLICATION_XML("application/xml"),
-		MULTIPART_FORM("multipart/form-data"),
-		URL_ENCODED_FORM("application/x-www-form-urlencoded");
-		
-		String value;
-		
-		BodyType(String value){
-			this.value = value;
+	public <T> T httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
+			Map<String, String> pathParams, Map<String, String> queryParams, Map<String, Object> form,
+			ContentType contentType, Accept accept, Class<T> responseClassName) throws ClientProtocolException, IOException {
+		HttpResponse httpResponse = this.httpExecute(hostName, headers, method, endPoint, pathParams, queryParams, null, form, contentType, accept);
+		String responseContentType = null;
+		Header[] responseHeader = httpResponse.getHeaders("Content-Type");
+		responseContentType = responseHeader[0].getValue();
+
+		HttpEntity httpResponseEntity = httpResponse.getEntity();
+		String stringBody = EntityUtils.toString(httpResponseEntity);
+
+		T t = null;
+
+		if (responseContentType != null && responseContentType.contains("json")) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			t = objectMapper.readValue(stringBody, responseClassName);
+		} else if (responseContentType != null && responseContentType.contains("xml")) {
+			XmlMapper xmlMapper = new XmlMapper();
+			t = xmlMapper.readValue(stringBody, responseClassName);
 		}
-		
-		public String getValue() {
-			return value;
-		}
+		return t;
 	}
+	
+	public <T> HttpResponse httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint,
+			Map<String, String> pathParam, Map<String, String> queryParam, T payload, ContentType contentType,
+			Accept accept, Map<String, Object> form) throws ParseException, IOException {
+		String stringEntity = null;
+		if (contentType != null && contentType == ContentType.APPLICATION_JSON) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			stringEntity = objectMapper.writeValueAsString(payload);
+		} else if (contentType != null && contentType == ContentType.APPLICATION_XML) {
+			XmlMapper xmlMapper = new XmlMapper();
+			stringEntity = xmlMapper.writeValueAsString(payload);
+		}
+		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam,
+				stringEntity, form, contentType, accept);
+		return httpResponse;
+	}
+
+	public <T> T httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint,
+			Map<String, String> pathParam, Map<String, String> queryParam, String payload, Map<String, Object> form,
+			ContentType contentType, Accept accept, Class<T> responseClassName) throws ParseException, IOException {
+
+		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam, payload,
+				form, contentType, accept);
+
+		String responseContentType = null;
+		Header[] headers = httpResponse.getHeaders("Content-Type");
+		responseContentType = headers[0].getValue();
+
+		HttpEntity httpResponseEntity = httpResponse.getEntity();
+		String stringBody = EntityUtils.toString(httpResponseEntity);
+
+		T t = null;
+
+		if (responseContentType != null && responseContentType.contains("json")) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			t = objectMapper.readValue(stringBody, responseClassName);
+		} else if (responseContentType != null && responseContentType.contains("xml")) {
+			XmlMapper xmlMapper = new XmlMapper();
+			t = xmlMapper.readValue(stringBody, responseClassName);
+		}
+		return t;
+	}
+
+	public <T> T httpExecute(String hostName, Map<String, String> header, ApiMethod method, String endPoint,
+			Map<String, String> pathParam, Map<String, String> queryParam, Map<String, Object> form,
+			ContentType contentType, Accept accept, T payload, Class<T> responseClassName)
+			throws ParseException, IOException {
+
+		String stringEntity = null;
+		if (contentType != null && contentType == ContentType.APPLICATION_JSON) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			stringEntity = objectMapper.writeValueAsString(payload);
+		} else if (contentType != null && contentType == ContentType.APPLICATION_XML) {
+			XmlMapper xmlMapper = new XmlMapper();
+			stringEntity = xmlMapper.writeValueAsString(payload);
+		}
+
+		HttpResponse httpResponse = this.httpExecute(hostName, header, method, endPoint, pathParam, queryParam,
+				stringEntity, form, contentType, accept);
+
+		String responseContentType = null;
+		Header[] headers = httpResponse.getHeaders("Content-Type");
+		responseContentType = headers[0].getValue();
+
+		HttpEntity httpResponseEntity = httpResponse.getEntity();
+		String stringBody = EntityUtils.toString(httpResponseEntity);
+
+		T t = null;
+
+		if (responseContentType != null && responseContentType.contains("json")) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			t = objectMapper.readValue(stringBody, responseClassName);
+		} else if (responseContentType != null && responseContentType.contains("xml")) {
+			XmlMapper xmlMapper = new XmlMapper();
+			t = xmlMapper.readValue(stringBody, responseClassName);
+		}
+		return t;
+	}
+
 }
