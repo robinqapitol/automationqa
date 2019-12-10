@@ -18,6 +18,8 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.protocol.HttpContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.qameta.allure.attachment.AttachmentData;
 import io.qameta.allure.attachment.AttachmentProcessor;
@@ -29,6 +31,8 @@ import io.qameta.allure.attachment.http.HttpResponseAttachment;
 
 public class ApiAllureLog implements HttpRequestInterceptor {
 
+	Logger log = LogManager.getLogger(getClass());
+	
 	AttachmentRenderer<AttachmentData> renderer;
 	AttachmentProcessor<AttachmentData> processor;
 
@@ -62,6 +66,7 @@ public class ApiAllureLog implements HttpRequestInterceptor {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			entityBody.writeTo(outStream);
 			String body = new String(outStream.toByteArray(), StandardCharsets.UTF_8);
+			log.info(body);
 			builder.withBody(body);
 			// String entityStringBody = EntityUtils.toString(entityBody);
 			// builder.setBody(entityStringBody);
@@ -136,7 +141,6 @@ public class ApiAllureLog implements HttpRequestInterceptor {
 
 	@Override
 	public void process(HttpRequest httpRequest, HttpContext context) throws HttpException, IOException {
-		// TODO Auto-generated method stub
 		HttpRequestAttachment.Builder builder = HttpRequestAttachment.Builder.create("Request",
 				httpRequest.getRequestLine().getUri());
 
@@ -157,8 +161,7 @@ public class ApiAllureLog implements HttpRequestInterceptor {
 			entityBody.writeTo(outStream);
 			String body = new String(outStream.toByteArray(), StandardCharsets.UTF_8);
 			builder.withBody(body);
-			// String entityStringBody = EntityUtils.toString(entityBody);
-			// builder.setBody(entityStringBody);
+			
 		}
 		HttpRequestAttachment httpRequestAttachment = builder.build();
 		this.processor.addAttachment(httpRequestAttachment, renderer);

@@ -3,7 +3,7 @@
 <suite name="TestNGXMLTest Test Suite">
 	<test name="TestNGXMLTest Test">
 		<classes>
-			<class name="com.qapitol.automationqa.AppTest" />
+			<class name="com.qapitol.automationqa.apitest.SampleTest" />
 		</classes>
 	</test>
 </suite>

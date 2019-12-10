@@ -10,6 +10,7 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class ApiDataLog {
 	
 	Logger log = LogManager.getLogger(getClass());
+	
 	
 	public void logApiRequest(HttpRequest httpRequest) throws IOException {
 		log.info("***************************************************************************");
@@ -36,7 +38,6 @@ public class ApiDataLog {
 			String body = new String(outStream.toByteArray(), StandardCharsets.UTF_8);
 			log.info(body);
 		}
-		log.info("--****--");
 	}
 
 	public void logApiResponse(HttpResponse httpResponse) throws ParseException, IOException {
@@ -47,10 +48,7 @@ public class ApiDataLog {
 		for (Header header : headers) {
 			log.info("Header:"+header.getName() +":"+ header.getValue());
 		}
-		HttpResponse responseCopy = httpResponse;
-		HttpEntity entityBody = responseCopy.getEntity();
-		String entityStringBody = EntityUtils.toString(entityBody);
-		log.info(entityStringBody);
+		log.info(ApiUtils.getEntityInString(httpResponse));
 		log.info("***************************************************************************");	
 	}
 }
