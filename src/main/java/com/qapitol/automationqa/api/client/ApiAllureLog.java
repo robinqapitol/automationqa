@@ -84,6 +84,7 @@ public class ApiAllureLog implements HttpRequestInterceptor {
 		HttpResponseAttachment.Builder builder = HttpResponseAttachment.Builder.create("Response");
 
 		Integer statusCode = httpResponse.getStatusLine().getStatusCode();
+		log.info("StatusCode:"+statusCode);
 		//builder.setResponseCode(httpResponse.getStatusLine().getStatusCode());
 
 		Map<String, String> attachHeaders = new HashMap<String, String>();
