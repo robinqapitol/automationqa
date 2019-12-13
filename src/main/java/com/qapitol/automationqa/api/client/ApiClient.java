@@ -174,6 +174,30 @@ public class ApiClient {
 				HttpEntity entity = new StringEntity(payload);
 				putRequest.setEntity(entity);
 			}
+			if (form != null && form.size() > 0) {
+				if (contentType == ContentType.MULTIPART_FORM) {
+					putRequest.removeHeaders("Content-Type"); // below method will add correct Content-Type
+					MultipartEntityBuilder multipart = MultipartEntityBuilder.create();
+					multipart.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						if (eachForm.getValue() instanceof File) {
+							multipart.addBinaryBody(eachForm.getKey(), (File) eachForm.getValue());
+						} else {
+							multipart.addTextBody(eachForm.getKey(), eachForm.getValue().toString());
+						}
+					}
+					HttpEntity formEntity = multipart.build();
+					putRequest.setEntity(formEntity);
+				} else if (contentType == ContentType.URL_ENCODED_FORM) {
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						nameValuePairs.add(new BasicNameValuePair(eachForm.getKey(), eachForm.getValue().toString()));
+					}
+					UrlEncodedFormEntity urlEncodedForm = new UrlEncodedFormEntity(nameValuePairs, "utf-8");
+					urlEncodedForm.setContentType(contentType.getValue());
+					putRequest.setEntity(urlEncodedForm);
+				}
+			}
 			apiUtils.addLogAndAllure(putRequest);
 			httpResponse = client.execute(putRequest);
 			apiUtils.addLogAndAllure(httpResponse);
