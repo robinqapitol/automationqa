@@ -24,7 +24,7 @@
     <div class="top-banner-root">
       <span class="top-banner-title-font">Test results</span>
       <br/>
-      <span class="top-banner-font-1">1 suite, 1 failed test</span>
+      <span class="top-banner-font-1">1 suite</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -38,7 +38,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" panel-name="suite-Default_suite" class="navigator-link">
-              <span class="suite-name border-failed">Default suite</span>
+              <span class="suite-name border-passed">Default suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -91,21 +91,21 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">1 method, 1 failed,   </span>
+                    <span class="method-stats">1 method,   1 passed</span>
                   </li>
                   <li>
-                    <span class="method-list-title failed">Failed methods</span>
-                    <span class="show-or-hide-methods failed">
-                      <a href="#" panel-name="suite-Default_suite" class="hide-methods failed suite-Default_suite"> (hide)</a> <!-- hide-methods failed suite-Default_suite -->
-                      <a href="#" panel-name="suite-Default_suite" class="show-methods failed suite-Default_suite"> (show)</a> <!-- show-methods failed suite-Default_suite -->
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Default_suite" class="hide-methods passed suite-Default_suite"> (hide)</a> <!-- hide-methods passed suite-Default_suite -->
+                      <a href="#" panel-name="suite-Default_suite" class="show-methods passed suite-Default_suite"> (show)</a> <!-- show-methods passed suite-Default_suite -->
                     </span>
-                    <div class="method-list-content failed suite-Default_suite">
+                    <div class="method-list-content passed suite-Default_suite">
                       <span>
-                        <img src="failed.png" width="3%"/>
+                        <img src="passed.png" width="3%"/>
                         <a href="#" panel-name="suite-Default_suite" title="com.qapitol.automationqa.apitest.serviceTest.TestService" class="method navigator-link" hash-for-method="CheckImage">CheckImage</a> <!-- method navigator-link -->
                       </span>
                       <br/>
-                    </div> <!-- method-list-content failed suite-Default_suite -->
+                    </div> <!-- method-list-content passed suite-Default_suite -->
                   </li>
                 </ul>
               </div> <!-- suite-section-content -->
@@ -117,9 +117,9 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Default_suite" class="panel Default_suite">
-          <div class="suite-Default_suite-class-failed">
+          <div class="suite-Default_suite-class-passed">
             <div class="main-panel-header rounded-window-top">
-              <img src="failed.png"/>
+              <img src="passed.png"/>
               <span class="class-name">com.qapitol.automationqa.apitest.serviceTest.TestService</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
@@ -128,62 +128,14 @@
                   <a name="CheckImage">
                   </a> <!-- CheckImage -->
                   <span class="method-name">CheckImage</span>
-                  <div class="stack-trace">com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field &quot;_id&quot; (class com.qapitol.automationqa.api.pojo.Me), not marked as ignorable (12 known properties: &quot;statusConnection&quot;, &quot;status&quot;, &quot;settings&quot;, &quot;active&quot;, &quot;emails&quot;, &quot;name&quot;, &quot;roles&quot;, &quot;services&quot;, &quot;utcOffset&quot;, &quot;id&quot;, &quot;username&quot;, &quot;avatarUrl&quot;])
- at [Source: (String)&quot;{&quot;status&quot;:&quot;success&quot;,&quot;data&quot;:{&quot;userId&quot;:&quot;DZrpycKxidxuhtPdz&quot;,&quot;authToken&quot;:&quot;7QUyCu5SwgEIibwVadxHJv58avg0GZOoBM-vna9RGP3&quot;,&quot;me&quot;:{&quot;_id&quot;:&quot;DZrpycKxidxuhtPdz&quot;,&quot;services&quot;:{&quot;password&quot;:{&quot;bcrypt&quot;:&quot;$2b$10$7VbLaiW9dezYbky0kTM1K.p6LVdQkL9agutywFu4qe.pEm.6JNptS&quot;}},&quot;emails&quot;:[{&quot;address&quot;:&quot;bairagi1007@live.com&quot;,&quot;verified&quot;:false}],&quot;status&quot;:&quot;online&quot;,&quot;active&quot;:true,&quot;roles&quot;:[&quot;user&quot;],&quot;name&quot;:&quot;qapios&quot;,&quot;statusConnection&quot;:&quot;online&quot;,&quot;utcOffset&quot;:5.5,&quot;username&quot;:&quot;qapios&quot;,&quot;settings&quot;:{&quot;preferences&quot;:{&quot;enableAutoAway&quot;:true,&quot;idleTimeLimit&quot;[truncated 800 chars]; line: 1, column: 129] (through reference chain: com.qapitol.automationqa.api.pojo.UserResponse[&quot;data&quot;]-&gt;com.qapitol.automationqa.api.pojo.Data[&quot;me&quot;]-&gt;com.qapitol.automationqa.api.pojo.Me[&quot;_id&quot;])
-	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
-	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:840)
-	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:1192)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1592)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1570)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:294)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:151)
-	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:129)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:288)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:151)
-	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:129)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:288)
-	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:151)
-	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4202)
-	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3205)
-	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3173)
-	at com.qapitol.automationqa.api.client.ApiUtils.convertJsonStringToPojoObject(ApiUtils.java:100)
-	at com.qapitol.automationqa.api.services.client.ServiceClient.doLogin(ServiceClient.java:33)
-	at com.qapitol.automationqa.apitest.serviceTest.TestService.CheckImage(TestService.java:25)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:124)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:583)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:719)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:989)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
-	at org.testng.TestRunner.privateRun(TestRunner.java:648)
-	at org.testng.TestRunner.run(TestRunner.java:505)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:455)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:450)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:415)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:364)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:84)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
-	at org.testng.TestNG.runSuites(TestNG.java:1049)
-	at org.testng.TestNG.run(TestNG.java:1017)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-
-</div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Default_suite-class-failed -->
+          </div> <!-- suite-Default_suite-class-passed -->
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">/private/var/folders/44/x999km_s16s6b1xl5r1whwtrhln556/T/testng-eclipse-173895253/testng-customsuite.xml</span>
+            <span class="header-content">/private/var/folders/44/x999km_s16s6b1xl5r1whwtrhln556/T/testng-eclipse-1398571783/testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -240,7 +192,7 @@ data.addRows(1);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'CheckImage')
 data.setCell(0, 2, 'com.qapitol.automationqa.apitest.serviceTest.TestService')
-data.setCell(0, 3, 1584);
+data.setCell(0, 3, 1189);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
@@ -260,9 +212,16 @@ return data;
         </div> <!-- panel -->
         <div panel-name="ignored-methods-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">0 ignored methods</span>
+            <span class="header-content">1 ignored method</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
+            <div class="ignored-class-div">
+              <span class="ignored-class-name">com.qapitol.automationqa.apitest.serviceTest.TestService</span>
+              <div class="ignored-methods-div">
+                <span class="ignored-method-name">CheckImage2</span>
+                <br/>
+              </div> <!-- ignored-methods-div -->
+            </div> <!-- ignored-class-div -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
         <div panel-name="chronological-Default_suite" class="panel">
@@ -273,8 +232,6 @@ return data;
             <div class="chronological-class">
               <div class="chronological-class-name">com.qapitol.automationqa.apitest.serviceTest.TestService</div> <!-- chronological-class-name -->
               <div class="test-method">
-                <img src="failed.png">
-                </img>
                 <span class="method-name">CheckImage</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- test-method -->
