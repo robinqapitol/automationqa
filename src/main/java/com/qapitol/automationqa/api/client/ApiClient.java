@@ -45,29 +45,6 @@ public class ApiClient {
 	Logger log = LogManager.getLogger(getClass());
 	
 	static ApiUtils apiUtils = new ApiUtils();
-
-	public void check() throws ClientProtocolException, IOException {
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet getCall = new HttpGet("http://reqres.in/api/users?page=2");
-		CloseableHttpResponse response = client.execute(getCall);
-		HttpEntity entity = response.getEntity();
-		String res = EntityUtils.toString(entity);
-		log.info("response111111:"+res);
-		StringEntity sten = new StringEntity(res);
-		response.setEntity(sten);
-		log.info("response22222:"+EntityUtils.toString(response.getEntity()));
-	}
-	
-	public void check2() throws ClientProtocolException, IOException {
-		HttpClient client = HttpClients.createDefault();
-		HttpPost postRequest = new HttpPost("http://dummy.restapiexample.com/api/v1/create");
-		HttpEntity entity = new StringEntity("{\"name\":\"tes6778585t\",\"salary\":\"123\",\"age\":\"23\"}");
-		postRequest.setEntity(entity);
-		postRequest.setHeader("Content-Type","application/json");
-		HttpResponse response = client.execute(postRequest);
-		log.info("Response:"+response.getStatusLine().getStatusCode());
-		log.info("Response:"+EntityUtils.toString(response.getEntity()));
-	}
 	
 	public static HttpResponse httpExecute(String hostName, Map<String, String> headers, ApiMethod method, String endPoint,
 			Map<String, String> pathParams, Map<String, String> queryParams, String payload, Map<String, Object> form,
@@ -173,6 +150,30 @@ public class ApiClient {
 			if (payload != null) {
 				HttpEntity entity = new StringEntity(payload);
 				putRequest.setEntity(entity);
+			}
+			if (form != null && form.size() > 0) {
+				if (contentType == ContentType.MULTIPART_FORM) {
+					putRequest.removeHeaders("Content-Type"); // below method will add correct Content-Type
+					MultipartEntityBuilder multipart = MultipartEntityBuilder.create();
+					multipart.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						if (eachForm.getValue() instanceof File) {
+							multipart.addBinaryBody(eachForm.getKey(), (File) eachForm.getValue());
+						} else {
+							multipart.addTextBody(eachForm.getKey(), eachForm.getValue().toString());
+						}
+					}
+					HttpEntity formEntity = multipart.build();
+					putRequest.setEntity(formEntity);
+				} else if (contentType == ContentType.URL_ENCODED_FORM) {
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+					for (Map.Entry<String, Object> eachForm : form.entrySet()) {
+						nameValuePairs.add(new BasicNameValuePair(eachForm.getKey(), eachForm.getValue().toString()));
+					}
+					UrlEncodedFormEntity urlEncodedForm = new UrlEncodedFormEntity(nameValuePairs, "utf-8");
+					urlEncodedForm.setContentType(contentType.getValue());
+					putRequest.setEntity(urlEncodedForm);
+				}
 			}
 			apiUtils.addLogAndAllure(putRequest);
 			httpResponse = client.execute(putRequest);
