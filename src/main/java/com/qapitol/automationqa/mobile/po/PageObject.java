@@ -12,11 +12,9 @@ public class PageObject {
 	public static final String LOGIN = "login-view-submit";
 	
 	public static final String AUTOMATAHON = "automatahon2019"; 
-	public static final String BRAIN_ASSISTANT = "";
-	public static final String BRAIN_WAVES = "Brain Waves";
-	public static final String SETTINGS = "Settings";
-	public static final String USER_PROFILE = "//*[@name=\"Cognizer BrainPad Stage\"]/XCUIElementTypeWindow[1]//..//XCUIElementTypeOther[1]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeImage";
-	public static final String LOGOUT = "Logout";
+	public static final String IMAGE1 = "ataconnect 12:20 PM  Reply";
+	public static final String IMAGE2 = "(//XCUIElementTypeOther[@name=\"ataconnect 12:22 PM  Reply\"])[2]";
+	//public static final String LOGOUT = "Logout";
 	
 	
 

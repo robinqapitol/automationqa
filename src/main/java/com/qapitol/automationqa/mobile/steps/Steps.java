@@ -1,5 +1,10 @@
 package com.qapitol.automationqa.mobile.steps;
 
+import java.io.File;
+
+import org.w3c.dom.html.HTMLImageElement;
+
+import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.qapitol.automationqa.mobile.AutomationQA;
 import com.qapitol.automationqa.mobile.po.PageObject;
 
@@ -38,4 +43,10 @@ public class Steps extends AutomationQA {
 		click("AccessibilityId", PageObject.AUTOMATAHON);
 	}
 	
+	@Step("Download 1st Image")
+	public static void downloadImage1() {
+		File fileToSaveImage = new File("/Users/anishjha/AutomationDemo/automationqa", "Image1");
+		//HtmlImage elementHtmlImage = (HtmlImage) pageWithImage.<HtmlImage>getFirstByXPath(PageObject.IMAGE1);
+		//elementHtmlImage.saveAs(fileToSaveImage);
+	}
 }
