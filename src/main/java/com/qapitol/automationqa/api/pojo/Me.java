@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Me {
 
-    private String id;
+    private String _id;
     private Services services;
     private List<Email> emails = null;
     private String status;
@@ -20,12 +20,12 @@ public class Me {
     private String avatarUrl;
     private Settings settings;
 
-    public String getId() {
-        return id;
+    public String get_Id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String _id) {
+        this._id = _id;
     }
 
     public Services getServices() {
