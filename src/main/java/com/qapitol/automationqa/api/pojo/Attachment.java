@@ -10,8 +10,6 @@ public class Attachment {
     private String text;
     private String authorName;
     private String authorIcon;
-    private String messageLink;
-    private List<Attachment_> attachments = null;
     private String ts;
     private String title;
     private String titleLink;
@@ -47,22 +45,6 @@ public class Attachment {
 
     public void setAuthorIcon(String authorIcon) {
         this.authorIcon = authorIcon;
-    }
-
-    public String getMessageLink() {
-        return messageLink;
-    }
-
-    public void setMessageLink(String messageLink) {
-        this.messageLink = messageLink;
-    }
-
-    public List<Attachment_> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Attachment_> attachments) {
-        this.attachments = attachments;
     }
 
     public String getTs() {

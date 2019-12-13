@@ -8,6 +8,7 @@ public class U {
 
     private String id;
     private String username;
+    private String name;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getId() {
@@ -24,6 +25,14 @@ public class U {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Map<String, Object> getAdditionalProperties() {
