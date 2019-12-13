@@ -4,6 +4,7 @@ import com.qapitol.automationqa.commons.validator.ValidateFiles;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -24,5 +25,18 @@ public class Commons {
         driver.findElement(By.xpath("//input[@id='emailOrUsername']")).sendKeys("qapios");
         driver.findElement(By.xpath("//input[@id='pass']")).sendKeys("Qapitol@123");
         driver.findElement(By.xpath("//button[@class='rc-button rc-button--primary login']")).click();
+    }
+
+    public void clickOnXpath(String xpath) throws InterruptedException {
+        Thread.sleep(5000);
+        if( driver.findElement(By.xpath(xpath)).isDisplayed()){
+            driver.findElement(By.xpath(xpath)).click();
+        }
+    }
+    public void sendTextOnXpath(String xpath, String message){
+        driver.manage().timeouts().implicitlyWait(5000, TimeUnit.MILLISECONDS);
+        if( driver.findElement(By.xpath(xpath)).isDisplayed()){
+            driver.findElement(By.xpath(xpath)).sendKeys(message+ Keys.ENTER);
+        }
     }
 }
