@@ -26,7 +26,7 @@ public class Headphones {
     @BeforeClass
     public void setUp() throws Exception {
         url="https://www.amazon.com";
-        System.setProperty("webdriver.chrome.driver", "/Users/bairagi.m/work/personal/automationqa/src/main/resources/BrowserDrivers/ChromeDriverMac");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/BrowserDrivers/ChromeDriverMac");
         driver = new ChromeDriver();
         driver.get(url);
     }
