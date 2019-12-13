@@ -23,25 +23,25 @@ public class ServiceClient {
 	
 	Logger log = LogManager.getLogger(getClass());
 
-	public UserResponse doLogin(UserEntry userentry) throws ClientProtocolException, IOException {
-		UserResponse userResponse = null;
+	public HttpResponse doLogin(UserEntry userentry) throws ClientProtocolException, IOException {
+		HttpResponse httpResponse = null;
 		String stringUserentry = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		stringUserentry = objectMapper.writeValueAsString(userentry);
 		log.info("request is:"+stringUserentry);
-		HttpResponse httpResponse = ApiClient.httpExecute(Config.getValue("baseUrl"), null, ApiMethod.POST,
+		httpResponse = ApiClient.httpExecute(Config.getValue("baseUrl"), null, ApiMethod.POST,
 				"/api/v1/login", null, null, stringUserentry, null, ContentType.APPLICATION_JSON,
 				Accept.APPLICATION_JSON);
-		userResponse = ApiUtils.convertJsonStringToPojoObject(ApiUtils.getEntityInString(httpResponse),
-				UserResponse.class);
-		return userResponse;
+		//userResponse = ApiUtils.convertJsonStringToPojoObject(ApiUtils.getEntityInString(httpResponse),
+		//		UserResponse.class);
+		return httpResponse;
 	}
 	
 	public HttpResponse getRoom(String xAuthTocken, String xUserId) throws ClientProtocolException, IOException {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("X-Auth-Token", xAuthTocken);
 		headers.put("X-User-Id", xUserId);
-		HttpResponse httpResponse = ApiClient.httpExecute(Config.getValue("baseUrl"), null, ApiMethod.GET,
+		HttpResponse httpResponse = ApiClient.httpExecute(Config.getValue("baseUrl"), headers, ApiMethod.GET,
 				"/api/v1/rooms.get", null, null, null, null, null,
 				Accept.APPLICATION_JSON);
 		
